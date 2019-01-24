@@ -1,0 +1,9 @@
+.ImageTable{
+	margin: auto;
+}
+
+.ImageTable table{
+	margin: auto;
+	/*margin-left:auto; 
+    margin-right:auto;*/
+}
