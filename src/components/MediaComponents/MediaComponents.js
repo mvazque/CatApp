@@ -5,9 +5,12 @@ import MediaComponent from './MediaComponent/MediaComponent';
 
 const mediaComponents = (props) => (
 	<tr>
-		{props.urls.map(url => (
+		{props.urls.map((dataArray, index) => (
 			<td>
-				<MediaComponent source={url} />
+				<MediaComponent 
+					key={'Element_' + dataArray.id}
+					dataArray={dataArray} 
+					favorited={props.favoriteSelected} />
 			</td>
 		))}
 	</tr>
