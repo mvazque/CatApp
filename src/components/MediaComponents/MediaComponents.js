@@ -1,8 +1,9 @@
 import React from 'react';
 
-//import classes from './MediaComponents.module.css';
 import MediaComponent from './MediaComponent/MediaComponent';
 
+//These are the rows in the ImageTable. It takes an array from ImageTable
+//and dynamically makes columns of MediaComponent based on that.
 const mediaComponents = (props) => (
 	<tr>
 		{props.urls.map((dataArray, index) => (

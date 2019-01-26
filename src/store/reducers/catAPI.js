@@ -1,6 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
 
-const initialState ={
+const initialState = { 
 	imageURLArray: null,
 	categoriesList: null,
 	rowLength: 3,

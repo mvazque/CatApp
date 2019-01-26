@@ -6,6 +6,8 @@ import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
 import ImageTable from '../ImageTable/ImageTable';
 import * as actions from '../../store/actions/catAPI';
 
+//Layout is meant to hold the two aspects of the app as well as most of the 
+//Redux calls required for this application.
 class Layout extends Component {
     componentDidMount() {
         this.props.getCategoryList();
@@ -17,6 +19,8 @@ class Layout extends Component {
         window.removeEventListener('scroll', this.handleScroll);
     }
 
+    //This code is meant to check where the user is at with respect to scrolling
+    //and will retreive more images once they reach the bottom.
     handleScroll = () => {
         if (!this.props.favoriteBoolean &&
             window.innerHeight + Math.ceil(document.documentElement.scrollTop)
