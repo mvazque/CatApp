@@ -31,20 +31,6 @@ These components are used to navigate through the different filters that are ava
 This is meant to contain UI elements that might be used throughout the application.
 
 Dropdown: This will create a stylized <select> element. It expects to receive and array of objects consisting of value and label. Value is the value the user wishes to apply to the dropdown option and label being the label to show for that option.
-	
-```
-# code block
-options: {[
-    {
-        value: value1 
-        label: label1
-    },
-    {
-        value: value2 
-        label: label2
-    }
-]}
-```
 
 # containers
 ### ImageTable:
