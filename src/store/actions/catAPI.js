@@ -28,8 +28,6 @@ export const retrieveCategoryList = () =>{
 }
 
 
-
-
 export const setImages = (images) =>{
 	return{
 		type: actionTypes.SET_IMAGES,
@@ -141,7 +139,6 @@ export const initDefault = () => {
 
 export const initCategory = (categoryID) => {
 	return dispatch => {
-		let userID = 'p_1285';
 		let url = "https://api.thecatapi.com/v1/images/search?mime_types=gif%2Cjpg%2Cpng&order=DESC&limit=24&page=1&category_ids=" + categoryID
 		axios({
 		  "async": true,
@@ -183,3 +180,56 @@ export const initCategory = (categoryID) => {
 	};
 };
 
+export const setFileType = (fileType) =>{
+	return{
+		type: actionTypes.SET_FILETYPE,
+		fileType: fileType
+	};
+}
+
+export const initFileType = (event) => {
+	return dispatch => {
+		let newlySelectedOption = event.target.value;
+
+		let url = "https://api.thecatapi.com/v1/images/search?mime_types=" + newlySelectedOption + "&order=DESC&limit=24&page=1"
+		axios({
+		  "async": true,
+          "crossDomain": true,
+          'url': url,
+		  'method': 'get',
+		  "headers": {
+		    "x-api-key": "49cd4b53-9242-48a9-80e3-dc4917418abe"
+		  },
+		})
+		.then(response => {
+			let imageURLArray = [];
+			const data = response.data;
+			const dataLength = data.length;
+			//console.log(response);
+			for(let i = 0; i < dataLength; i++){
+				let row = Math.floor(i/3);
+				if(imageURLArray[row]){
+					imageURLArray[row].dataArray.push({
+						url: data[i].url,
+						id: data[i].id
+					});
+				}
+				else{
+					imageURLArray[row] = {
+						rowNumber: row,
+						dataArray: [{
+							url: data[i].url,
+							id: data[i].id
+						}]
+					}
+				}
+				
+			}
+			
+			dispatch(setImages(imageURLArray));
+		})
+		.then(() =>{
+			dispatch(setFileType(newlySelectedOption));
+		});
+	}
+}

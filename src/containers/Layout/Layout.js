@@ -40,7 +40,7 @@ class Layout extends Component {
                         categoriesList: this.props.categoriesList,
                         handlerToUse: this.retrieveACategory}}
                  />
-                <ImageTable favorited={this.props.selectFavorite}/>
+                <ImageTable favorited={this.props.selectFavorite} selectFileType={this.props.selectFileType} />
             </>
         )
     }
@@ -58,7 +58,8 @@ const mapDispatchToProps = dispatch => {
         getFavorites: () => dispatch(actions.initFavorite()),
         getCategoryList: () => dispatch(actions.retrieveCategoryList()),
         getByCategory: (categoryID) => dispatch(actions.initCategory(categoryID)),
-        selectFavorite: (dataID) => dispatch(actions.selectFavorite(dataID))
+        selectFavorite: (dataID) => dispatch(actions.selectFavorite(dataID)),
+        selectFileType: (event) => dispatch(actions.initFileType(event))
     }
 }
 

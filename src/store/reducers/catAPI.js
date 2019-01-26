@@ -16,15 +16,15 @@ const initialState ={
 			value: "gif%2Cjpg%2Cpng",
 			label: "gif,jpg,png"
 		}],
-	selectedOption: "gif%2Cjpg%2Cpng"
+	selectedFileType: "gif%2Cjpg%2Cpng"
 }
 
 const setImages = (state,action) => {
 	return {
 		...state,
-		dropdownOptions: {
-			...state.dropdownOptions
-		},
+		// dropdownOptions: {
+		// 	...state.dropdownOptions
+		// },
 		imageURLArray: action.images
 	};
 }
@@ -32,10 +32,20 @@ const setImages = (state,action) => {
 const setCategories = (state,action) => {
 	return {
 		...state,
-		dropdownOptions: {
-			...state.dropdownOptions
-		},
+		// dropdownOptions: {
+		// 	...state.dropdownOptions
+		// },
 		categoriesList: action.categories
+	};
+}
+
+const setFileType = (state,action) => {
+	return {
+		...state,
+		// dropdownOptions: {
+		// 	...state.dropdownOptions
+		// },
+		selectedFileType: action.fileType
 	};
 }
 
@@ -43,6 +53,7 @@ const reducer = (state = initialState, action) => {
 	switch(action.type){
 		case actionTypes.SET_IMAGES: return setImages(state, action);
 		case actionTypes.SET_CATEGORIES: return setCategories(state, action);
+		case actionTypes.SET_FILETYPE: return setFileType(state, action);
 		default: return state;
 	}
 };

@@ -10,29 +10,32 @@ import MediaComponents from '../../components/MediaComponents/MediaComponents';
 import Dropdown from '../../components/UI/Dropdown/Dropdown';
 
 class ImageTable extends Component {
-	state ={
-		rowLength: 3,
-		dropdownOptions: [{
-				value: "gif",
-				label: "gif"
-			}, 
-			{
-				value: "jpg%2Cpng",
-				label: "jpg,png"
-			}, 
-			{
-				value: "gif%2Cjpg%2Cpng",
-				label: "gif,jpg,png"
-			}],
-		selectedOption: "gif%2Cjpg%2Cpng"
-	}
+	// state ={
+	// 	rowLength: 3,
+	// 	dropdownOptions: [{
+	// 			value: "gif",
+	// 			label: "gif"
+	// 		}, 
+	// 		{
+	// 			value: "jpg%2Cpng",
+	// 			label: "jpg,png"
+	// 		}, 
+	// 		{
+	// 			value: "gif%2Cjpg%2Cpng",
+	// 			label: "gif,jpg,png"
+	// 		}],
+	// 	selectedOption: "gif%2Cjpg%2Cpng"
+	// }
 	componentDidMount() {
 		this.props.setImages();
 	}
 
-	// retrieveFavorite = () => {
-	// 	let userID = 'p_1285';
-	// 	let url = 'https://api.thecatapi.com/v1/favourites?sub_id=' + userID;
+	// selectHandler = (event) => {
+	// 	let newlySelectedOption = event.target.value;
+	// 	this.setState({selectedOption: newlySelectedOption})
+
+	// 	console.log(this.state.selectedOption);
+	// 	let url = "https://api.thecatapi.com/v1/images/search?mime_types=" + newlySelectedOption + "&order=DESC&limit=24&page=1"
 	// 	axios({
 	// 	  "async": true,
  //          "crossDomain": true,
@@ -43,26 +46,24 @@ class ImageTable extends Component {
 	// 	  },
 	// 	})
 	// 	.then(response => {
-	// 		console.log(response);
 	// 		let imageURLArray = [];
 	// 		const data = response.data;
 	// 		const dataLength = data.length;
 	// 		//console.log(response);
 	// 		for(let i = 0; i < dataLength; i++){
 	// 			let row = Math.floor(i/this.state.rowLength);
-	// 			let imageData = data[i].image;
 	// 			if(imageURLArray[row]){
 	// 				imageURLArray[row].dataArray.push({
-	// 					url: imageData.url,
-	// 					id: imageData.id
+	// 					url: data[i].url,
+	// 					id: data[i].id
 	// 				});
 	// 			}
 	// 			else{
 	// 				imageURLArray[row] = {
 	// 					rowNumber: row,
 	// 					dataArray: [{
-	// 						url: imageData.url,
-	// 						id: imageData.id
+	// 						url: data[i].url,
+	// 						id: data[i].id
 	// 					}]
 	// 				}
 	// 			}
@@ -71,75 +72,9 @@ class ImageTable extends Component {
 			
 	// 		this.setState({imageURLArray: imageURLArray});
 	// 	});
+
+
 	// }
-
-	// favoriteHandler = (dataID) => {
-	// 	console.log(dataID);
-	// 	console.log("Favorited");
-	// 	let userID = 'p_1285';
-
-	// 	axios({
-	// 	  "async": true,
- //          "crossDomain": true,
- //          'url': 'https://api.thecatapi.com/v1/favourites',
-	// 	  'method': 'post',
-	// 	  "headers": {
-	// 	    "content-type": "application/json",
-	// 	    "x-api-key": "49cd4b53-9242-48a9-80e3-dc4917418abe"
-	// 	  },
-	// 	  "processData": false,
-	// 	  'data': '{"image_id":"' + dataID + '","sub_id":"' + userID + '"}'
-	// 	})
-	// 	.then(response => {
-	// 		console.log(response)
-	// 	});
-	// }
-
-	selectHandler = (event) => {
-		let newlySelectedOption = event.target.value;
-		this.setState({selectedOption: newlySelectedOption})
-
-		console.log(this.state.selectedOption);
-		let url = "https://api.thecatapi.com/v1/images/search?mime_types=" + newlySelectedOption + "&order=DESC&limit=24&page=1"
-		axios({
-		  "async": true,
-          "crossDomain": true,
-          'url': url,
-		  'method': 'get',
-		  "headers": {
-		    "x-api-key": "49cd4b53-9242-48a9-80e3-dc4917418abe"
-		  },
-		})
-		.then(response => {
-			let imageURLArray = [];
-			const data = response.data;
-			const dataLength = data.length;
-			//console.log(response);
-			for(let i = 0; i < dataLength; i++){
-				let row = Math.floor(i/this.state.rowLength);
-				if(imageURLArray[row]){
-					imageURLArray[row].dataArray.push({
-						url: data[i].url,
-						id: data[i].id
-					});
-				}
-				else{
-					imageURLArray[row] = {
-						rowNumber: row,
-						dataArray: [{
-							url: data[i].url,
-							id: data[i].id
-						}]
-					}
-				}
-				
-			}
-			
-			this.setState({imageURLArray: imageURLArray});
-		});
-
-
-	}
 
 	render() {
 		let images = null;
@@ -161,9 +96,9 @@ class ImageTable extends Component {
 		return (
 			<div className={classes.ImageTable}>
 				<Dropdown 
-					handleSelect={this.selectHandler} 
-					options={this.state.dropdownOptions} 
-					selectedOption={this.state.selectedOption}/>
+					handleSelect={this.props.selectFileType} 
+					options={this.props.dropdownOptions} 
+					selectedOption={this.props.selectedFileType}/>
 				{images}
 
 			</div>
@@ -173,7 +108,9 @@ class ImageTable extends Component {
 
 const mapstateToProps = state => {
 	return {
-		imageURLArray: state.imageURLArray
+		imageURLArray: state.imageURLArray,
+		selectedFileType: state.selectedFileType,
+		dropdownOptions: state.dropdownOptions
 	};
 }
 
