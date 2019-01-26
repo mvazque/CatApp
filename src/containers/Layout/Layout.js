@@ -7,8 +7,23 @@ import ImageTable from '../ImageTable/ImageTable';
 import * as actions from '../../store/actions/catAPI';
 
 class Layout extends Component {
+    componentDidMount() {
+        this.props.getCategoryList();
+    }
+
+    retrieveDefault = () => {
+        this.props.getDefault();
+    }
+
     retrieveFavorite = () => {
         this.props.getFavorites();
+    }
+
+    retrieveACategory = (categoryData) => {
+        console.log(categoryData);
+        console.log("CATegory");
+        this.props.getByCategory(categoryData.id);
+        // categoryID
     }
 
     render () {
@@ -17,28 +32,34 @@ class Layout extends Component {
                 <Toolbar 
                     default={{
                         label: "Home",
-                        handlerToUse: this.retrieveFavorite}}
+                        handlerToUse: this.retrieveDefault}}
                     favorite={{
                         label: "Favorites",
                         handlerToUse: this.retrieveFavorite}}
-
+                    categories={{
+                        categoriesList: this.props.categoriesList,
+                        handlerToUse: this.retrieveACategory}}
                  />
-                <ImageTable/>
+                <ImageTable favorited={this.props.selectFavorite}/>
             </>
         )
     }
 }
 
-// const mapStateToProps = state => {
-//     return{
-        
-//     };
-// };
+const mapStateToProps = state => {
+    return{
+        categoriesList: state.categoriesList
+    };
+};
 
 const mapDispatchToProps = dispatch => {
     return {
-        getFavorites: () => dispatch(actions.initFavorite())
+        getDefault: () => dispatch(actions.initDefault()),
+        getFavorites: () => dispatch(actions.initFavorite()),
+        getCategoryList: () => dispatch(actions.retrieveCategoryList()),
+        getByCategory: (categoryID) => dispatch(actions.initCategory(categoryID)),
+        selectFavorite: (dataID) => dispatch(actions.selectFavorite(dataID))
     }
 }
 
-export default connect(null, mapDispatchToProps)(Layout);
+export default connect(mapStateToProps, mapDispatchToProps)(Layout);

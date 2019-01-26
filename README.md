@@ -2,28 +2,6 @@
 Web app created using the Cat API
 
 
-
-
-Hi Miguel,
-
- 
-
-Good news, it sounds like your call went well today?  Thank you for your interest in working at Motor Trend Group. We have prepared a small assignment for you to demonstrate your coding and problem solving abilities. We hope to see code quality, design decisions, as well as the use of testing. You can work on this task on your own time. After reviewing the below, when do you think you can complete this and return it to me?
-
- 
-
-Assignment:
-
- 
-
-You will be working with the following API: http://thecatapi.com/
-
- 
-
-Please read and familiarize yourself with the documentation and features. Your mission, if you choose to accept, will be to digest and interact with the data.
-
- 
-
 Requirements
 
    *  Use React to build your application

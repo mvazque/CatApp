@@ -2,6 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 
 const initialState ={
 	imageURLArray: null,
+	categoriesList: null,
 	rowLength: 3,
 	dropdownOptions: [{
 			value: "gif",
@@ -28,9 +29,20 @@ const setImages = (state,action) => {
 	};
 }
 
+const setCategories = (state,action) => {
+	return {
+		...state,
+		dropdownOptions: {
+			...state.dropdownOptions
+		},
+		categoriesList: action.categories
+	};
+}
+
 const reducer = (state = initialState, action) => {
 	switch(action.type){
 		case actionTypes.SET_IMAGES: return setImages(state, action);
+		case actionTypes.SET_CATEGORIES: return setCategories(state, action);
 		default: return state;
 	}
 };

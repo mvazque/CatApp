@@ -4,7 +4,7 @@ import classes from './NavigationItem.module.css';
 
 const navigationItem = ( props ) => (
     <li className={classes.NavigationItem}>
-        <button>{props.clicked ? props.clicked.label : null}</button>
+        <button onClick={props.categoryData ? () => props.clicked.handlerToUse(props.categoryData) : props.clicked.handlerToUse}>{props.clicked ?  props.clicked.label.charAt(0).toUpperCase() + props.clicked.label.slice(1) : null}</button>
     </li>
 );
 
