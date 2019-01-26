@@ -16,7 +16,8 @@ const initialState ={
 			value: "gif%2Cjpg%2Cpng",
 			label: "gif,jpg,png"
 		}],
-	selectedFileType: "gif%2Cjpg%2Cpng"
+	selectedFileType: "gif%2Cjpg%2Cpng",
+	currentCategoryID: ""
 }
 
 const setImages = (state,action) => {
@@ -49,13 +50,27 @@ const setFileType = (state,action) => {
 	};
 }
 
+const setCurrentCategory = (state,action) => {
+	return {
+		...state,
+		// dropdownOptions: {
+		// 	...state.dropdownOptions
+		// },
+		currentCategoryID: action.categoryID
+	};
+}
+
 const reducer = (state = initialState, action) => {
 	switch(action.type){
 		case actionTypes.SET_IMAGES: return setImages(state, action);
 		case actionTypes.SET_CATEGORIES: return setCategories(state, action);
 		case actionTypes.SET_FILETYPE: return setFileType(state, action);
+		case actionTypes.SET_CURRENT_CATEGORY: return setCurrentCategory(state, action);
 		default: return state;
 	}
 };
 
 export default reducer;
+
+
+// arr: [...state.arr, action.newItem]

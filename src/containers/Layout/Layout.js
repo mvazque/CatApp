@@ -9,10 +9,21 @@ import * as actions from '../../store/actions/catAPI';
 class Layout extends Component {
     componentDidMount() {
         this.props.getCategoryList();
+        this.props.getDefault("gif%2Cjpg%2Cpng");
+        window.addEventListener('scroll', this.handleScroll);
     }
 
+    componentWillUnmount()  {
+        window.removeEventListener('scroll', this.handleScroll);
+    }
+
+    // handleScroll = () => {
+    //     //https://alligator.io/react/react-infinite-scroll/
+    //     console.log("scrolling");
+    // }
+
     retrieveDefault = () => {
-        this.props.getDefault();
+        this.props.getDefault(this.props.currentFileType);
     }
 
     retrieveFavorite = () => {
@@ -20,10 +31,11 @@ class Layout extends Component {
     }
 
     retrieveACategory = (categoryData) => {
-        console.log(categoryData);
-        console.log("CATegory");
-        this.props.getByCategory(categoryData.id);
-        // categoryID
+        this.props.getByCategory(this.props.currentFileType, categoryData.id);
+    }
+
+    retrieveAFileType = (event) => {
+        this.props.selectFileType(event, this.props.currentCategory);
     }
 
     render () {
@@ -40,7 +52,7 @@ class Layout extends Component {
                         categoriesList: this.props.categoriesList,
                         handlerToUse: this.retrieveACategory}}
                  />
-                <ImageTable favorited={this.props.selectFavorite} selectFileType={this.props.selectFileType} />
+                <ImageTable favorited={this.props.selectFavorite} selectFileType={this.retrieveAFileType} />
             </>
         )
     }
@@ -48,18 +60,20 @@ class Layout extends Component {
 
 const mapStateToProps = state => {
     return{
-        categoriesList: state.categoriesList
+        categoriesList: state.categoriesList,
+        currentFileType: state.selectedFileType,
+        currentCategory: state.currentCategoryID
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        getDefault: () => dispatch(actions.initDefault()),
+        getDefault: (fileType) => dispatch(actions.initDefault(fileType)),
         getFavorites: () => dispatch(actions.initFavorite()),
         getCategoryList: () => dispatch(actions.retrieveCategoryList()),
-        getByCategory: (categoryID) => dispatch(actions.initCategory(categoryID)),
+        getByCategory: (fileType, categoryID) => dispatch(actions.initCategory(fileType, categoryID)),
         selectFavorite: (dataID) => dispatch(actions.selectFavorite(dataID)),
-        selectFileType: (event) => dispatch(actions.initFileType(event))
+        selectFileType: (event, categoryID) => dispatch(actions.initFileType(event, categoryID))
     }
 }
 

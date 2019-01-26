@@ -1,5 +1,7 @@
 import * as actionTypes from './actionTypes';
-import axios from 'axios';
+import axios from '../../axios-cat';
+
+const columnsPerRow = 3;
 
 export const setCategories = (categories) =>{
 	return{
@@ -11,7 +13,7 @@ export const setCategories = (categories) =>{
 
 export const retrieveCategoryList = () =>{
 	return dispatch => {
-		let url = "https://api.thecatapi.com/v1/categories";
+		let url = "categories";
 		axios({
 		  "async": true,
 	      "crossDomain": true,
@@ -37,14 +39,12 @@ export const setImages = (images) =>{
 
 export const selectFavorite = (dataID) => {
 	return dispatch => {
-		console.log(dataID);
-		console.log("Favorited");
 		let userID = 'p_1285';
 
 		axios({
 		  "async": true,
 	      "crossDomain": true,
-	      'url': 'https://api.thecatapi.com/v1/favourites',
+	      'url': 'favourites',
 		  'method': 'post',
 		  "headers": {
 		    "content-type": "application/json",
@@ -62,7 +62,7 @@ export const selectFavorite = (dataID) => {
 export const initFavorite = () => {
 	return dispatch => {
 		let userID = 'p_1285';
-		let url = 'https://api.thecatapi.com/v1/favourites?sub_id=' + userID;
+		let url = 'favourites?sub_id=' + userID;
 		axios({
 		  "async": true,
 	      "crossDomain": true,
@@ -79,7 +79,7 @@ export const initFavorite = () => {
 			const dataLength = data.length;
 			//console.log(response);
 			for(let i = 0; i < dataLength; i++){
-				let row = Math.floor(i/3);
+				let row = Math.floor(i/columnsPerRow);
 				let imageData = data[i].image;
 				if(imageURLArray[row]){
 					imageURLArray[row].dataArray.push({
@@ -103,43 +103,181 @@ export const initFavorite = () => {
 	};
 };
 
-export const initDefault = () => {
-	let columnsPerRow = 3
-	console.log("BLARGH")
+export const initDefault = (fileType) => {
 	return dispatch => {
-		axios.get('https://api.thecatapi.com/v1/images/search?limit=24&page=1&order=DESC')
-		.then(response => {
-			let imageURLArray = [];
-			const data = response.data;
-			const dataLength = data.length;
-			for(let i = 0; i < dataLength; i++){
-				let row = Math.floor(i/columnsPerRow);
-				if(imageURLArray[row]){
-					imageURLArray[row].dataArray.push({
-						url: data[i].url,
-						id: data[i].id
-					});
-				}
-				else{
-					imageURLArray[row] = {
-						rowNumber: row,
-						dataArray: [{
-							url: data[i].url,
-							id: data[i].id
-						}]
-					}
-				}
+		console.log(fileType);
+		dispatch(setCategory(""));	
+		dispatch(retreiveImages(fileType, ""));
+		// axios.get('images/search?limit=24&page=1&order=DESC')
+		// .then(response => {
+		// 	let imageURLArray = [];
+		// 	const data = response.data;
+		// 	const dataLength = data.length;
+		// 	for(let i = 0; i < dataLength; i++){
+		// 		let row = Math.floor(i/columnsPerRow);
+		// 		if(imageURLArray[row]){
+		// 			imageURLArray[row].dataArray.push({
+		// 				url: data[i].url,
+		// 				id: data[i].id
+		// 			});
+		// 		}
+		// 		else{
+		// 			imageURLArray[row] = {
+		// 				rowNumber: row,
+		// 				dataArray: [{
+		// 					url: data[i].url,
+		// 					id: data[i].id
+		// 				}]
+		// 			}
+		// 		}
 				
-			}
+		// 	}
 			
-			dispatch(setImages(imageURLArray));
-		});
+		// 	dispatch(setImages(imageURLArray));
+		// });
 	};
 };
 
-export const initCategory = (categoryID) => {
+export const setCategory = (categoryID) =>{
+	return{
+		type: actionTypes.SET_CURRENT_CATEGORY,
+		categoryID: categoryID
+	};
+}
+
+export const initCategory = (fileType, categoryID) => {
 	return dispatch => {
-		let url = "https://api.thecatapi.com/v1/images/search?mime_types=gif%2Cjpg%2Cpng&order=DESC&limit=24&page=1&category_ids=" + categoryID
+		console.log(categoryID)
+		dispatch(setCategory(categoryID));	
+		dispatch(retreiveImages(fileType, categoryID));
+	};
+
+	// return dispatch => {
+	// 	let url = "images/search?mime_types=gif%2Cjpg%2Cpng&order=DESC&limit=24&page=1&category_ids=" + categoryID
+	// 	axios({
+	// 	  "async": true,
+	//       "crossDomain": true,
+	//       'url': url,
+	// 	  'method': 'get',
+	// 	  "headers": {
+	// 	    "x-api-key": "49cd4b53-9242-48a9-80e3-dc4917418abe"
+	// 	  },
+	// 	})
+	// 	.then(response => {
+	// 		console.log(response);
+	// 		let imageURLArray = [];
+	// 		const data = response.data;
+	// 		const dataLength = data.length;
+	// 		for(let i = 0; i < dataLength; i++){
+	// 			let row = Math.floor(i/columnsPerRow);
+	// 			let imageData = data[i];
+	// 			if(imageURLArray[row]){
+	// 				imageURLArray[row].dataArray.push({
+	// 					url: imageData.url,
+	// 					id: imageData.id
+	// 				});
+	// 			}
+	// 			else{
+	// 				imageURLArray[row] = {
+	// 					rowNumber: row,
+	// 					dataArray: [{
+	// 						url: imageData.url,
+	// 						id: imageData.id
+	// 					}]
+	// 				}
+	// 			}
+				
+	// 		}
+	// 		dispatch(setImages(imageURLArray));
+	// 	});
+	// };
+};
+
+export const setFileType = (fileType) =>{
+	return{
+		type: actionTypes.SET_FILETYPE,
+		fileType: fileType
+	};
+}
+
+export const initFileType = (event, categoryID) => {
+	return dispatch => {
+		let newlySelectedOption = event.target.value;
+		dispatch(setFileType(newlySelectedOption));
+		dispatch(retreiveImages(newlySelectedOption, categoryID))
+		
+
+		// let fileTypeURL = "mime_types=" + newlySelectedOption
+		// console.log(fileTypeURL);
+
+		// let categoryURL = "";
+		// if(categoryID !== ""){
+		// 	categoryURL = "&category_ids=" + categoryID
+		// }
+		// console.log(categoryURL);
+		// let url = "images/search?"+ fileTypeURL +"&order=DESC&limit=24&page=1" + categoryURL;
+		// console.log(url);
+
+
+
+
+		// axios({
+		//   "async": true,
+  //         "crossDomain": true,
+  //         'url': url,
+		//   'method': 'get',
+		//   "headers": {
+		//     "x-api-key": "49cd4b53-9242-48a9-80e3-dc4917418abe"
+		//   },
+		// })
+		// .then(response => {
+		// 	let imageURLArray = [];
+		// 	const data = response.data;
+		// 	const dataLength = data.length;
+		// 	//console.log(response);
+		// 	for(let i = 0; i < dataLength; i++){
+		// 		let row = Math.floor(i/columnsPerRow);
+		// 		if(imageURLArray[row]){
+		// 			imageURLArray[row].dataArray.push({
+		// 				url: data[i].url,
+		// 				id: data[i].id
+		// 			});
+		// 		}
+		// 		else{
+		// 			imageURLArray[row] = {
+		// 				rowNumber: row,
+		// 				dataArray: [{
+		// 					url: data[i].url,
+		// 					id: data[i].id
+		// 				}]
+		// 			}
+		// 		}
+				
+		// 	}
+			
+		// 	dispatch(setImages(imageURLArray));
+		// })
+		// .then(() =>{
+		// 	dispatch(setFileType(newlySelectedOption));
+		// });
+	}
+}
+
+export const retreiveImages = (fileType, categoryID) => {
+	console.log(fileType, categoryID);
+
+	return dispatch => {
+		let fileTypeURL = "mime_types=" + fileType
+		console.log(fileTypeURL);
+
+		let categoryURL = "";
+		if(categoryID !== ""){
+			categoryURL = "&category_ids=" + categoryID
+		}
+		console.log(categoryURL);
+		let url = "images/search?"+ fileTypeURL +"&order=DESC&limit=24&page=1" + categoryURL;
+		console.log(url);
+
 		axios({
 		  "async": true,
 	      "crossDomain": true,
@@ -156,7 +294,7 @@ export const initCategory = (categoryID) => {
 			const dataLength = data.length;
 			//console.log(response);
 			for(let i = 0; i < dataLength; i++){
-				let row = Math.floor(i/3);
+				let row = Math.floor(i/columnsPerRow);
 				let imageData = data[i];
 				if(imageURLArray[row]){
 					imageURLArray[row].dataArray.push({
@@ -178,58 +316,7 @@ export const initCategory = (categoryID) => {
 			dispatch(setImages(imageURLArray));
 		});
 	};
-};
 
-export const setFileType = (fileType) =>{
-	return{
-		type: actionTypes.SET_FILETYPE,
-		fileType: fileType
-	};
+
 }
 
-export const initFileType = (event) => {
-	return dispatch => {
-		let newlySelectedOption = event.target.value;
-
-		let url = "https://api.thecatapi.com/v1/images/search?mime_types=" + newlySelectedOption + "&order=DESC&limit=24&page=1"
-		axios({
-		  "async": true,
-          "crossDomain": true,
-          'url': url,
-		  'method': 'get',
-		  "headers": {
-		    "x-api-key": "49cd4b53-9242-48a9-80e3-dc4917418abe"
-		  },
-		})
-		.then(response => {
-			let imageURLArray = [];
-			const data = response.data;
-			const dataLength = data.length;
-			//console.log(response);
-			for(let i = 0; i < dataLength; i++){
-				let row = Math.floor(i/3);
-				if(imageURLArray[row]){
-					imageURLArray[row].dataArray.push({
-						url: data[i].url,
-						id: data[i].id
-					});
-				}
-				else{
-					imageURLArray[row] = {
-						rowNumber: row,
-						dataArray: [{
-							url: data[i].url,
-							id: data[i].id
-						}]
-					}
-				}
-				
-			}
-			
-			dispatch(setImages(imageURLArray));
-		})
-		.then(() =>{
-			dispatch(setFileType(newlySelectedOption));
-		});
-	}
-}
