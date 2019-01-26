@@ -17,10 +17,14 @@ class Layout extends Component {
         window.removeEventListener('scroll', this.handleScroll);
     }
 
-    // handleScroll = () => {
-    //     //https://alligator.io/react/react-infinite-scroll/
-    //     console.log("scrolling");
-    // }
+    handleScroll = () => {
+        if (!this.props.favoriteBoolean &&
+            window.innerHeight + Math.ceil(document.documentElement.scrollTop)
+            === document.documentElement.offsetHeight
+          ) {
+            this.props.getMoreImages(this.props.currentFileType, this.props.currentCategory , this.props.currentHighestPage);
+          }
+    }
 
     retrieveDefault = () => {
         this.props.getDefault(this.props.currentFileType);
@@ -52,7 +56,9 @@ class Layout extends Component {
                         categoriesList: this.props.categoriesList,
                         handlerToUse: this.retrieveACategory}}
                  />
-                <ImageTable favorited={this.props.selectFavorite} selectFileType={this.retrieveAFileType} />
+                <ImageTable
+                    favorites={this.props.favoriteBoolean} 
+                    favorited={this.props.selectFavorite} selectFileType={this.retrieveAFileType} />
             </>
         )
     }
@@ -62,7 +68,9 @@ const mapStateToProps = state => {
     return{
         categoriesList: state.categoriesList,
         currentFileType: state.selectedFileType,
-        currentCategory: state.currentCategoryID
+        currentCategory: state.currentCategoryID,
+        currentHighestPage: state.currentHighestPage,
+        favoriteBoolean: state.favoriteBoolean
     };
 };
 
@@ -73,7 +81,8 @@ const mapDispatchToProps = dispatch => {
         getCategoryList: () => dispatch(actions.retrieveCategoryList()),
         getByCategory: (fileType, categoryID) => dispatch(actions.initCategory(fileType, categoryID)),
         selectFavorite: (dataID) => dispatch(actions.selectFavorite(dataID)),
-        selectFileType: (event, categoryID) => dispatch(actions.initFileType(event, categoryID))
+        selectFileType: (event, categoryID) => dispatch(actions.initFileType(event, categoryID)),
+        getMoreImages: (event, categoryID, highestPageNumber) => dispatch(actions.retrieveMoreImages(event, categoryID, highestPageNumber))
     }
 }
 

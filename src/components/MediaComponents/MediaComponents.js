@@ -10,7 +10,9 @@ const mediaComponents = (props) => (
 				<MediaComponent 
 					key={'Element_' + dataArray.id}
 					dataArray={dataArray} 
-					favorited={props.favoriteSelected} />
+					favorited={props.favoriteSelected} 
+					favoritesBoolean={props.favorites}
+					/>
 			</td>
 		))}
 	</tr>

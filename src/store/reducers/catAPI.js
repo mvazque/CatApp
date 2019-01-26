@@ -17,25 +17,23 @@ const initialState ={
 			label: "gif,jpg,png"
 		}],
 	selectedFileType: "gif%2Cjpg%2Cpng",
-	currentCategoryID: ""
+	currentCategoryID: "",
+	currentHighestPage: 1,
+	favoriteBoolean: false
 }
 
 const setImages = (state,action) => {
 	return {
 		...state,
-		// dropdownOptions: {
-		// 	...state.dropdownOptions
-		// },
-		imageURLArray: action.images
+		imageURLArray: action.images,
+		currentHighestPage: action.resetPageNumber,
+		favoriteBoolean: action.favoriteBoolean
 	};
 }
 
 const setCategories = (state,action) => {
 	return {
 		...state,
-		// dropdownOptions: {
-		// 	...state.dropdownOptions
-		// },
 		categoriesList: action.categories
 	};
 }
@@ -43,9 +41,6 @@ const setCategories = (state,action) => {
 const setFileType = (state,action) => {
 	return {
 		...state,
-		// dropdownOptions: {
-		// 	...state.dropdownOptions
-		// },
 		selectedFileType: action.fileType
 	};
 }
@@ -53,10 +48,15 @@ const setFileType = (state,action) => {
 const setCurrentCategory = (state,action) => {
 	return {
 		...state,
-		// dropdownOptions: {
-		// 	...state.dropdownOptions
-		// },
 		currentCategoryID: action.categoryID
+	};
+}
+
+const setNextPage = (state,action) => {
+	return {
+		...state,
+		imageURLArray: state.imageURLArray.concat(action.images),
+		currentHighestPage: action.pageNumber
 	};
 }
 
@@ -66,6 +66,7 @@ const reducer = (state = initialState, action) => {
 		case actionTypes.SET_CATEGORIES: return setCategories(state, action);
 		case actionTypes.SET_FILETYPE: return setFileType(state, action);
 		case actionTypes.SET_CURRENT_CATEGORY: return setCurrentCategory(state, action);
+		case actionTypes.SET_NEXT_PAGE: return setNextPage(state, action);
 		default: return state;
 	}
 };

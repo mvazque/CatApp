@@ -19,7 +19,8 @@ class ImageTable extends Component {
 								key={'Row_' + urlArray.rowNumber}
 								rowNumber={urlArray.rowNumber}
 								urls={urlArray.dataArray} 
-								favoriteSelected={this.props.favorited} />
+								favoriteSelected={this.props.favorited} 
+								favorites={this.props.favorites}/>
 						))}
 					</tbody>
 				</table>

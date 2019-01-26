@@ -13,7 +13,7 @@
 	padding: 10px;
 }
 
-.MediaComponent div{
+.MediaComponent .inactive{
     background-color: gray;
     height: 15px;
     transform: rotate(-45deg);
@@ -22,8 +22,8 @@
     right: 20px;
 }
 
-.MediaComponent div:before,
-.MediaComponent div:after {
+.MediaComponent .inactive:before,
+.MediaComponent .inactive:after {
   content: "";
   background-color: gray;
   border-radius: 50%;
@@ -32,11 +32,33 @@
   width: 15px;
 }
 
-.MediaComponent div:before {
+.MediaComponent .inactive:before {
   top: -7px;
   left: 0;
 }
 
+.MediaComponent .active{
+    background-color: red;
+    height: 15px;
+    transform: rotate(-45deg);
+    width: 15px;
+    position: absolute;
+    right: 20px;
+}
 
+.MediaComponent .active:before,
+.MediaComponent .active:after {
+  content: "";
+  background-color: red;
+  border-radius: 50%;
+  height: 15px;
+  position: absolute;
+  width: 15px;
+}
+
+.MediaComponent .active:before {
+  top: -7px;
+  left: 0;
+}
 
 /*//400 is a good size for the larger screen*/

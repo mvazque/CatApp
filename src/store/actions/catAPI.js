@@ -2,7 +2,8 @@ import * as actionTypes from './actionTypes';
 import axios from '../../axios-cat';
 
 const columnsPerRow = 3;
-
+const userID = 'p_1285';
+//devID = 'p_1285'
 export const setCategories = (categories) =>{
 	return{
 		type: actionTypes.SET_CATEGORIES,
@@ -30,16 +31,17 @@ export const retrieveCategoryList = () =>{
 }
 
 
-export const setImages = (images) =>{
+export const setImages = (images, favoriteBoolean) =>{
 	return{
 		type: actionTypes.SET_IMAGES,
-		images: images
+		images: images,
+		resetPageNumber: 1,
+		favoriteBoolean: favoriteBoolean
 	};
 }
 
 export const selectFavorite = (dataID) => {
 	return dispatch => {
-		let userID = 'p_1285';
 
 		axios({
 		  "async": true,
@@ -52,16 +54,30 @@ export const selectFavorite = (dataID) => {
 		  },
 		  "processData": false,
 		  'data': '{"image_id":"' + dataID + '","sub_id":"' + userID + '"}'
-		})
-		.then(response => {
-			console.log(response)
 		});
 	}
 }
 
+// export const removeFavorite = (dataID) => {
+// 	console.log(dataID);	
+// 	return dispatch => {
+// 		let url = "favourites/" + dataID
+// 		axios({	
+// 		  "async": true,
+// 	      "crossDomain": true,
+// 	      'url': url,
+// 		  'method': 'delete',
+// 		  "headers": {
+// 		  	"content-type": "application/json",
+// 		    "x-api-key": "49cd4b53-9242-48a9-80e3-dc4917418abe"
+// 		  },
+// 		  'data': ''
+// 		});
+// 	}
+// }
+
 export const initFavorite = () => {
 	return dispatch => {
-		let userID = 'p_1285';
 		let url = 'favourites?sub_id=' + userID;
 		axios({
 		  "async": true,
@@ -73,11 +89,9 @@ export const initFavorite = () => {
 		  },
 		})
 		.then(response => {
-			console.log(response);
 			let imageURLArray = [];
 			const data = response.data;
 			const dataLength = data.length;
-			//console.log(response);
 			for(let i = 0; i < dataLength; i++){
 				let row = Math.floor(i/columnsPerRow);
 				let imageData = data[i].image;
@@ -98,43 +112,15 @@ export const initFavorite = () => {
 				}
 				
 			}
-			dispatch(setImages(imageURLArray));
+			dispatch(setImages(imageURLArray, true));
 		});
 	};
 };
 
 export const initDefault = (fileType) => {
 	return dispatch => {
-		console.log(fileType);
 		dispatch(setCategory(""));	
-		dispatch(retreiveImages(fileType, ""));
-		// axios.get('images/search?limit=24&page=1&order=DESC')
-		// .then(response => {
-		// 	let imageURLArray = [];
-		// 	const data = response.data;
-		// 	const dataLength = data.length;
-		// 	for(let i = 0; i < dataLength; i++){
-		// 		let row = Math.floor(i/columnsPerRow);
-		// 		if(imageURLArray[row]){
-		// 			imageURLArray[row].dataArray.push({
-		// 				url: data[i].url,
-		// 				id: data[i].id
-		// 			});
-		// 		}
-		// 		else{
-		// 			imageURLArray[row] = {
-		// 				rowNumber: row,
-		// 				dataArray: [{
-		// 					url: data[i].url,
-		// 					id: data[i].id
-		// 				}]
-		// 			}
-		// 		}
-				
-		// 	}
-			
-		// 	dispatch(setImages(imageURLArray));
-		// });
+		dispatch(retrieveImages(fileType, ""));
 	};
 };
 
@@ -147,50 +133,9 @@ export const setCategory = (categoryID) =>{
 
 export const initCategory = (fileType, categoryID) => {
 	return dispatch => {
-		console.log(categoryID)
 		dispatch(setCategory(categoryID));	
-		dispatch(retreiveImages(fileType, categoryID));
+		dispatch(retrieveImages(fileType, categoryID));
 	};
-
-	// return dispatch => {
-	// 	let url = "images/search?mime_types=gif%2Cjpg%2Cpng&order=DESC&limit=24&page=1&category_ids=" + categoryID
-	// 	axios({
-	// 	  "async": true,
-	//       "crossDomain": true,
-	//       'url': url,
-	// 	  'method': 'get',
-	// 	  "headers": {
-	// 	    "x-api-key": "49cd4b53-9242-48a9-80e3-dc4917418abe"
-	// 	  },
-	// 	})
-	// 	.then(response => {
-	// 		console.log(response);
-	// 		let imageURLArray = [];
-	// 		const data = response.data;
-	// 		const dataLength = data.length;
-	// 		for(let i = 0; i < dataLength; i++){
-	// 			let row = Math.floor(i/columnsPerRow);
-	// 			let imageData = data[i];
-	// 			if(imageURLArray[row]){
-	// 				imageURLArray[row].dataArray.push({
-	// 					url: imageData.url,
-	// 					id: imageData.id
-	// 				});
-	// 			}
-	// 			else{
-	// 				imageURLArray[row] = {
-	// 					rowNumber: row,
-	// 					dataArray: [{
-	// 						url: imageData.url,
-	// 						id: imageData.id
-	// 					}]
-	// 				}
-	// 			}
-				
-	// 		}
-	// 		dispatch(setImages(imageURLArray));
-	// 	});
-	// };
 };
 
 export const setFileType = (fileType) =>{
@@ -204,79 +149,19 @@ export const initFileType = (event, categoryID) => {
 	return dispatch => {
 		let newlySelectedOption = event.target.value;
 		dispatch(setFileType(newlySelectedOption));
-		dispatch(retreiveImages(newlySelectedOption, categoryID))
-		
-
-		// let fileTypeURL = "mime_types=" + newlySelectedOption
-		// console.log(fileTypeURL);
-
-		// let categoryURL = "";
-		// if(categoryID !== ""){
-		// 	categoryURL = "&category_ids=" + categoryID
-		// }
-		// console.log(categoryURL);
-		// let url = "images/search?"+ fileTypeURL +"&order=DESC&limit=24&page=1" + categoryURL;
-		// console.log(url);
-
-
-
-
-		// axios({
-		//   "async": true,
-  //         "crossDomain": true,
-  //         'url': url,
-		//   'method': 'get',
-		//   "headers": {
-		//     "x-api-key": "49cd4b53-9242-48a9-80e3-dc4917418abe"
-		//   },
-		// })
-		// .then(response => {
-		// 	let imageURLArray = [];
-		// 	const data = response.data;
-		// 	const dataLength = data.length;
-		// 	//console.log(response);
-		// 	for(let i = 0; i < dataLength; i++){
-		// 		let row = Math.floor(i/columnsPerRow);
-		// 		if(imageURLArray[row]){
-		// 			imageURLArray[row].dataArray.push({
-		// 				url: data[i].url,
-		// 				id: data[i].id
-		// 			});
-		// 		}
-		// 		else{
-		// 			imageURLArray[row] = {
-		// 				rowNumber: row,
-		// 				dataArray: [{
-		// 					url: data[i].url,
-		// 					id: data[i].id
-		// 				}]
-		// 			}
-		// 		}
-				
-		// 	}
-			
-		// 	dispatch(setImages(imageURLArray));
-		// })
-		// .then(() =>{
-		// 	dispatch(setFileType(newlySelectedOption));
-		// });
+		dispatch(retrieveImages(newlySelectedOption, categoryID))
 	}
 }
 
-export const retreiveImages = (fileType, categoryID) => {
-	console.log(fileType, categoryID);
-
+export const retrieveImages = (fileType, categoryID) => {
 	return dispatch => {
 		let fileTypeURL = "mime_types=" + fileType
-		console.log(fileTypeURL);
 
 		let categoryURL = "";
 		if(categoryID !== ""){
 			categoryURL = "&category_ids=" + categoryID
 		}
-		console.log(categoryURL);
 		let url = "images/search?"+ fileTypeURL +"&order=DESC&limit=24&page=1" + categoryURL;
-		console.log(url);
 
 		axios({
 		  "async": true,
@@ -288,11 +173,9 @@ export const retreiveImages = (fileType, categoryID) => {
 		  },
 		})
 		.then(response => {
-			console.log(response);
 			let imageURLArray = [];
 			const data = response.data;
 			const dataLength = data.length;
-			//console.log(response);
 			for(let i = 0; i < dataLength; i++){
 				let row = Math.floor(i/columnsPerRow);
 				let imageData = data[i];
@@ -313,10 +196,69 @@ export const retreiveImages = (fileType, categoryID) => {
 				}
 				
 			}
-			dispatch(setImages(imageURLArray));
+			dispatch(setImages(imageURLArray, false));
 		});
 	};
 
 
+}
+
+export const setNextPage = (images, pageNumber) =>{
+	return{
+		type: actionTypes.SET_NEXT_PAGE,
+		images: images,
+		pageNumber: pageNumber
+	};
+}
+
+export const retrieveMoreImages = (fileType, categoryID, currentHighestPage) => {
+	return dispatch => {
+		let fileTypeURL = "mime_types=" + fileType
+
+		let categoryURL = "";
+		if(categoryID !== ""){
+			categoryURL = "&category_ids=" + categoryID
+		}
+		let newPageNumber = currentHighestPage + 1;
+		let pageURL = "&page=" + newPageNumber
+		let url = "images/search?"+ fileTypeURL +"&order=DESC&limit=24" +  pageURL + categoryURL;
+		console.log(url);
+		console.log('https://api.thecatapi.com/v1/images/search?mime_types=gif%2Cjpg%2Cpng&order=DESC&limit=24&page=2&category_ids=2')
+		axios({
+		  "async": true,
+	      "crossDomain": true,
+	      'url': url,
+		  'method': 'get',
+		  "headers": {
+		    "x-api-key": "49cd4b53-9242-48a9-80e3-dc4917418abe"
+		  },
+		})
+		.then(response => {
+			let imageURLArray = [];
+			const data = response.data;
+			const dataLength = data.length;
+			for(let i = 0; i < dataLength; i++){
+				let row = Math.floor(i/columnsPerRow);
+				let imageData = data[i];
+				if(imageURLArray[row]){
+					imageURLArray[row].dataArray.push({
+						url: imageData.url,
+						id: imageData.id
+					});
+				}
+				else{
+					imageURLArray[row] = {
+						rowNumber: row + "page_" + newPageNumber,
+						dataArray: [{
+							url: imageData.url,
+							id: imageData.id
+						}]
+					}
+				}
+				
+			}
+			dispatch(setNextPage(imageURLArray,newPageNumber));
+		});
+	};
 }
 
