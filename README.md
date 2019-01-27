@@ -20,7 +20,7 @@ npm test
 # Breakdown of parts:
 
 
-# components
+# 1. components
 ### MediaComponents:
 These components are used to create the image containers that appear within the application. It consists of MediaComponents which creates the rows made up of various MediaComponent elements.
 
@@ -28,25 +28,9 @@ These components are used to create the image containers that appear within the 
 These components are used to navigate through the different filters that are available from TheCatAPI. NavigationItems dynamically creates NavigationItem elements. It will create them dynamically based on the categories available. The Toolbar is the element containing both of these.
 
 ### UI
-This is meant to contain UI elements that might be used throughout the application.
-
-Dropdown: This will create a stylized <select> element. It expects to receive and array of objects consisting of value and label. Value is the value the user wishes to apply to the dropdown option and label being the label to show for that option.
+These are elements that might be used throughout the application. One such element is Drowdown which creates a stylized dropdown selector based on the elements passed to it. It expects and array of objects with each containing label and value. Label should contain the label that will appear on the option in the dropdown and value should have its respective value.
 	
-```
-# code block
-options: {[
-    {
-        value: value1 
-        label: label1
-    },
-    {
-        value: value2 
-        label: label2
-    }
-]}
-```
-
-# containers
+# 2. containers
 ### ImageTable:
 This is the element that will hold all the images and creates the table that they will be organized in. It is connected to the Redux state elements it needs to properly render. It will dynamically create more rows of images based on the state.
 
@@ -54,7 +38,7 @@ This is the element that will hold all the images and creates the table that the
 This is overall view of the application. It holds both the Toolbar and ImageTable. It is connected to the Redux store and passes functions and props to the two elements as needed. This element will check to see when a user has scrolled to the bottom of the page and initiate the request to retrieve more images.
 
 
-# store
+# 3.store
 ### actions:
 actionTypes: This holds a list of all the actionTypes used in actions and reducers. These are used to make things look a bit cleaner.
 
